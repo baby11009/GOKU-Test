@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #5fcd6f;
+  --primary2: #1c381bcc;
+  --secondary: #017111;
+  --text-light: #fff;
+}
+
+body {
+  color: var(--text-light);
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary2: var(--primary2);
+  --color-secondary: var(--secondary);
+  --color-hover: var(--text-light);
+}
+
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+.animate-spin-slow {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* modal */
+
+.modal-mask {
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background-color: #000000b3;
+  inset: 0;
+  position: fixed;
+  transition: opacity 0.3s ease;
+  z-index: 9000;
+}
+
+.modal-enter {
+  animation: modal-enter 0.3s ease forwards;
+}
+
+.modal-leave {
+  animation: modal-leave 0.3s ease 0.1s forwards;
+}
+
+@keyframes modal-enter {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-leave {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.modal-wrapper-enter {
+  animation: modal-wrapper-enter 0.3s ease forwards;
+}
+
+.modal-wrapper-leave {
+  animation: modal-wrapper-leave 0.3s ease forwards;
+}
+
+@keyframes modal-wrapper-enter {
+  0% {
+    transform: scale(0.95) translateY(20px);
+  }
+
+  100% {
+  }
+}
+
+@keyframes modal-wrapper-leave {
+  0% {
+  }
+
+  100% {
+    transform: scale(0.95) translateY(-10px);
+  }
+}
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  max-height: 85vh;
+  transition: all 0.3s ease;
+  width: 60%;
+}
