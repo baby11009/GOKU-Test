@@ -6,7 +6,7 @@ interface Props {
 }
 
 const LoadingScreen = ({ activePathName }: Props) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let timeout: number | null = setTimeout(() => {
