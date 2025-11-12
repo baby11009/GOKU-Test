@@ -79,11 +79,13 @@ const preloadImages = async (
 const Overview = () => {
   const [isMoving, setIsMoving] = useState(false);
 
-  const [src, setSrc] = useState("1.jpg");
+  // const [src, setSrc] = useState("1.jpg");
 
   const [loadingProgress, setLoadingProgress] = useState(0);
 
   const imgList = useRef<BlobImageList>({});
+
+  const imgRef = useRef<HTMLImageElement>(null);
 
   // container
 
@@ -124,7 +126,8 @@ const Overview = () => {
       const cachedSrc = imgList.current[imgNum];
 
       if (cachedSrc) {
-        setSrc(cachedSrc);
+        // setSrc(cachedSrc);
+        imgRef.current!.src = cachedSrc;
       }
     }
   }, []);
@@ -134,7 +137,9 @@ const Overview = () => {
       // Set ảnh đầu tiên sau khi load xong
       const firstImage = imgList.current[1];
       if (firstImage) {
-        setSrc(firstImage);
+        // setSrc(firstImage);
+        console.log(imgRef.current)
+        imgRef.current!.src = firstImage;
       }
     });
   }, []);
@@ -240,8 +245,9 @@ const Overview = () => {
   return (
     <div className='w-dvw h-dvh' ref={containerRef}>
       <img
-        src={src}
+        // src={src}
         alt=''
+        ref={imgRef}
         className='size-full object-cover select-none'
         draggable='false'
         onDragStart={(e) => e.preventDefault()}
