@@ -1,8 +1,8 @@
-// import type { Dispatch, RefObject, SetStateAction } from "react";
+import type { RefObject } from "react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import PageLoader from "@/components/loader/PageLoader";
 import { toggleNavbar } from "@/components/navbar/Navbar";
-// type BlobImageList = Record<string, string>;
+type BlobImageList = Record<string, string>;
 
 // tính toán  Hệ số nhạy (tốc độ xoay)
 const calculateSen = () => {
@@ -42,39 +42,39 @@ const calculateSen = () => {
 //   await Promise.all(promises);
 // };
 
-// const preloadImages = async (
-//   imgListRef: RefObject<BlobImageList>,
-//   setLoadingProgress: Dispatch<SetStateAction<number>>,
-// ) => {
-//   const total = 120;
-//   let loaded = 0;
+const preloadImages = async (
+  imgListRef: RefObject<BlobImageList>,
+  setLoadingProgress: (progress: number) => void,
+) => {
+  const total = 120;
+  let loaded = 0;
 
-//   const promises = Array.from({ length: total }).map((_, index) => {
-//     return new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-//       const imgNum = index + 1;
-//       const src = `/src/assets/images/rotation/${imgNum}.jpg`;
+  const promises = Array.from({ length: total }).map((_, index) => {
+    return new Promise<void>((resolve) => {
+      const img = new Image();
+      const imgNum = index + 1;
+      const src = `/assets/images/rotation/${imgNum}.jpg`;
 
-//       img.onload = () => {
-//         imgListRef.current[imgNum] = src; // Chỉ lưu path
-//         loaded++;
-//         setLoadingProgress(Math.round((loaded / total) * 100));
-//         resolve();
-//       };
-//       //localhost:4173/assets/images/rotation
-//       http: img.onerror = (err) => {
-//         console.error(`Failed to load image ${imgNum}:`, err);
-//         loaded++;
-//         setLoadingProgress(Math.round((loaded / total) * 100));
-//         reject(err);
-//       };
+      img.onload = () => {
+        imgListRef.current[imgNum] = src; // Lưu path
+        loaded++;
+        setLoadingProgress(Math.round((loaded / total) * 100));
+        resolve();
+      };
 
-//       img.src = src;
-//     });
-//   });
+      img.onerror = () => {
+        console.error(`Failed to load image ${imgNum}`);
+        loaded++;
+        setLoadingProgress(Math.round((loaded / total) * 100));
+        resolve(); // Vẫn resolve để không block
+      };
 
-//   await Promise.allSettled(promises); // Dùng allSettled để không fail nếu 1 ảnh lỗi
-// };
+      img.src = src; // Trigger download và cache
+    });
+  });
+
+  await Promise.all(promises);
+};
 
 const Overview = () => {
   const [isMoving, setIsMoving] = useState(false);
@@ -83,7 +83,7 @@ const Overview = () => {
 
   const [loadingProgress, setLoadingProgress] = useState(0);
 
-  // const imgList = useRef<BlobImageList>({});
+  const imgList = useRef<BlobImageList>({});
 
   // container
 
@@ -121,16 +121,22 @@ const Overview = () => {
       // Cập nhật lastPos
       lastPos.current = posX;
 
-      // const cachedSrc = imgList.current[imgNum];
-      setSrc(`${imgNum}.jpg`);
-      // if (cachedSrc) {
-      //   setSrc(cachedSrc);
-      // }
+      const cachedSrc = imgList.current[imgNum];
+
+      if (cachedSrc) {
+        setSrc(cachedSrc);
+      }
     }
   }, []);
 
   useEffect(() => {
-    setLoadingProgress(100);
+    preloadImages(imgList, setLoadingProgress).then(() => {
+      // Set ảnh đầu tiên sau khi load xong
+      const firstImage = imgList.current[1];
+      if (firstImage) {
+        setSrc(firstImage);
+      }
+    });
   }, []);
 
   // useEffect(() => {
@@ -234,7 +240,7 @@ const Overview = () => {
   return (
     <div className='w-dvw h-dvh' ref={containerRef}>
       <img
-        src={`${window.location.origin}/assets/images/rotation/${src}`}
+        src={`${window.location.origin}${src}`}
         alt=''
         className='size-full object-cover select-none'
         draggable='false'
