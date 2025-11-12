@@ -68,6 +68,7 @@ const Overview = () => {
 
   const calculateAngle = useCallback((posX: number) => {
     if (typeof lastPos.current === "number") {
+      toggleNavbar({ state: true });
       // Tính delta movement
       const deltaX = posX - lastPos.current;
 
@@ -171,13 +172,13 @@ const Overview = () => {
     if (isMoving && loadingProgress === 100) {
       const handleMouseMove = (e: MouseEvent) => {
         calculateAngle(e.clientX);
-        toggleNavbar({ state: true });
+       
       };
 
       const handleTouchMove = (e: TouchEvent) => {
         const touch = e.touches[0];
         calculateAngle(touch.clientX);
-        toggleNavbar({ state: true });
+
       };
 
       window.addEventListener("mousemove", handleMouseMove);
