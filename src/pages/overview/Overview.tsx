@@ -2,6 +2,7 @@ import type { RefObject } from "react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import PageLoader from "@/components/loader/PageLoader";
 import { toggleNavbar } from "@/components/navbar/Navbar";
+import OverviewModal from "@/components/modal/OverviewModal";
 type BlobImageList = Record<string, string>;
 
 // tính toán  Hệ số nhạy (tốc độ xoay)
@@ -30,7 +31,7 @@ const preloadImages = async (
       const blobUrl = await preloadImageAsBlob(
         `/images/rotation/${index + 1}.jpg`,
       );
-      console.log("🚀 ~ blobUrl:", blobUrl);
+
       imgListRef.current[index + 1] = blobUrl;
     } catch (err) {
       console.error(`Failed to load image ${index + 1}:`, err);
@@ -134,31 +135,21 @@ const Overview = () => {
   useEffect(() => {
     preloadImages(imgList, setLoadingProgress).then(() => {
       // Set ảnh đầu tiên sau khi load xong
-      const firstImage = imgList.current[1];
+      const firstImage = imgList.current["1"];
       if (firstImage) {
         setSrc(firstImage);
       }
     });
+
+    return () => {
+      // Clean up image blobs
+      Object.values(imgList.current).forEach((url) => {
+        if (url && url.startsWith("blob:")) {
+          URL.revokeObjectURL(url);
+        }
+      });
+    };
   }, []);
-
-  // useEffect(() => {
-  //   preloadImages(imgList, setLoadingProgress).then(() => {
-  //     // Set ảnh đầu tiên sau khi load xong
-  //     const firstImage = imgList.current["1"];
-  //     if (firstImage) {
-  //       setSrc(firstImage);
-  //     }
-  //   });
-
-  //   return () => {
-  //     // Clean up image blobs
-  //     Object.values(imgList.current).forEach((url) => {
-  //       if (url && url.startsWith("blob:")) {
-  //         URL.revokeObjectURL(url);
-  //       }
-  //     });
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (loadingProgress === 100 && containerRef.current) {
@@ -235,20 +226,21 @@ const Overview = () => {
     }
   }, [isMoving, loadingProgress, calculateAngle]);
 
-  if (loadingProgress < 100) {
-    return <PageLoader loadingProgress={loadingProgress} />;
-  }
-
   return (
     <div className='w-dvw h-dvh' ref={containerRef}>
-      <img
-        src={src}
-        alt=''
-        className='size-full object-cover select-none'
-        draggable='false'
-        onDragStart={(e) => e.preventDefault()}
-        onDrop={(e) => e.preventDefault()}
-      />
+      <OverviewModal />
+      {loadingProgress < 100 ? (
+        <PageLoader loadingProgress={loadingProgress} />
+      ) : (
+        <img
+          src={src}
+          alt=''
+          className='size-full object-cover select-none'
+          draggable='false'
+          onDragStart={(e) => e.preventDefault()}
+          onDrop={(e) => e.preventDefault()}
+        />
+      )}
     </div>
   );
 };

@@ -1,19 +1,15 @@
-import "@/styles/modal.css";
 import { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 const Modal = ({
   children,
   onClose,
-  className,
   isExited,
 }: {
   children: ReactNode;
-  onClose: () => void;
-  className?: string;
+  onClose?: () => void;
   isExited: boolean;
 }) => {
-
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
@@ -29,15 +25,10 @@ const Modal = ({
       className={`modal-mask ${isExited ? "modal-enter" : "modal-leave"}`}
       {...(isExited ? {} : { tabIndex: 0 })}
     >
-      <div
-        className={`modal-wrapper ${
-          isExited ? "modal-wrapper-enter" : "modal-wrapper-leave"
-        }`}
-      >
-        <div className='absolute inset-0' onClick={onClose}></div>
-        <div className={`relative  modal-container ${className}`}>
-          {children}
-        </div>
+      <div className='size-full flex items-center justify-center'>
+        {onClose && <div className='absolute inset-0' onClick={onClose}></div>}
+
+        {children}
       </div>
     </div>,
     container,

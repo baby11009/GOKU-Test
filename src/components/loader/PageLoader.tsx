@@ -1,6 +1,7 @@
 import LoadingBackground from "./LoadingBackground";
 
 const PageLoader = ({ loadingProgress }: { loadingProgress: number }) => {
+
   return (
     <LoadingBackground className={"bg-primary2/80"}>
       <div className='absolute bottom-36 w-full h-10 flex flex-col justify-center items-center gap-3'>

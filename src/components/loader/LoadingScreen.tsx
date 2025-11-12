@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import LoadingBackground from "./LoadingBackground";
+import PrimaryButton from "../button/PrimaryButton";
 interface Props {
   activePathName: string;
 }
@@ -8,11 +9,15 @@ interface Props {
 const LoadingScreen = ({ activePathName }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     let timeout: number | null = setTimeout(() => {
       setIsLoading(false);
       timeout = null;
-      <Navigate to={"/overview"} replace={true} />;
+      if (activePathName === "/") {
+        navigate("/overview", { replace: true });
+      }
     }, 5000);
 
     return () => {
@@ -27,18 +32,10 @@ const LoadingScreen = ({ activePathName }: Props) => {
   }
 
   return (
-    <LoadingBackground className=' z-200!'>
+    <LoadingBackground className=' z-500!'>
       {activePathName === "/" && (
-        <Link
-          to={"/overview"}
-          className='mt-5 md:mt-10 relative px-16 md:px-20 py-3 md:py-5 bg-primary rounded-2xl
-        border-secondary border-3 hover:bg-white/85 hover:border-white drop-shadow-lg drop-shadow-white/0 hover:drop-shadow-white
-        transition-all duration-300 group'
-          onClick={() => setIsLoading(false)}
-        >
-          <p className='uppercase group-hover:text-primary font-medium text-sm md:text-base'>
-            Bắt đầu
-          </p>
+        <Link to={"/overview"} onClick={() => setIsLoading(false)}>
+          <PrimaryButton text='Bắt đầu' />
         </Link>
       )}
     </LoadingBackground>
