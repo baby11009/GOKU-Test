@@ -17,10 +17,8 @@ const LoadingScreen = ({ activePathName }: Props) => {
       if (activePathName === "/") {
         navigate("/overview", { replace: true });
       }
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 200);
-    }, 4800);
+      setIsLoading(false);
+    }, 5000);
 
     return () => {
       if (timeout) {

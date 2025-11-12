@@ -8,6 +8,13 @@ const Layout = () => {
 
   return (
     <div className='w-screen min-h-screen'>
+      <div className='fixed inset-0 -z-1 bg-secondary'>
+        <img
+          src='/images/bgLoading.jpg'
+          alt='bgImage'
+          className='object-cover absolute size-full'
+        />
+      </div>
       <LoadingScreen activePathName={pathname} />
       <Outlet />
       {pathname !== "/" && <Navbar activePathName={pathname} />}
