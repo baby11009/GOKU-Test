@@ -34,7 +34,7 @@ const LoadingScreen = ({ activePathName }: Props) => {
   return (
     <LoadingBackground className=' z-500!'>
       {activePathName === "/" && (
-        <Link to={"/overview"} onClick={() => setIsLoading(false)}>
+        <Link to={"/overview"} replace={true} onClick={() => setIsLoading(false)}>
           <PrimaryButton text='Bắt đầu' />
         </Link>
       )}
