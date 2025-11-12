@@ -71,7 +71,7 @@ const Overview = () => {
 
   const [src, setSrc] = useState("/images/rotation/1.jpg");
 
-  const [loadingProgress, setLoadingProgress] = useState(100);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   // const imgList = useRef<BlobImageList>({});
 
@@ -119,6 +119,21 @@ const Overview = () => {
 
       setSrc(`/images/rotation/${imgNum}.jpg`);
     }
+  }, []);
+
+  useEffect(() => {
+    let total = 0;
+    const interval = setInterval(() => {
+      setLoadingProgress((prev) => prev + 1);
+      total++;
+      if (total === 100) {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   // useEffect(() => {
