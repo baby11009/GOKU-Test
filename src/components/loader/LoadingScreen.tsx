@@ -13,12 +13,14 @@ const LoadingScreen = ({ activePathName }: Props) => {
 
   useEffect(() => {
     let timeout: number | null = setTimeout(() => {
-      setIsLoading(false);
       timeout = null;
       if (activePathName === "/") {
         navigate("/overview", { replace: true });
       }
-    }, 5000);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 200);
+    }, 4800);
 
     return () => {
       if (timeout) {
@@ -34,7 +36,11 @@ const LoadingScreen = ({ activePathName }: Props) => {
   return (
     <LoadingBackground className=' z-500!'>
       {activePathName === "/" && (
-        <Link to={"/overview"} replace={true} onClick={() => setIsLoading(false)}>
+        <Link
+          to={"/overview"}
+          replace={true}
+          onClick={() => setIsLoading(false)}
+        >
           <PrimaryButton text='Bắt đầu' />
         </Link>
       )}
