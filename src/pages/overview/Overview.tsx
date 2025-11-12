@@ -140,7 +140,7 @@ const Overview = () => {
       };
 
       containerRef.current.addEventListener("mousedown", handleMouseDown);
-      containerRef.current.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("mouseup", handleMouseUp);
 
       // mobile
       containerRef.current.addEventListener("touchstart", handleTouchStart);

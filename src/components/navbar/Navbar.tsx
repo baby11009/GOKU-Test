@@ -81,7 +81,7 @@ const Navbar = ({ activePathName }: Props) => {
   }, []);
 
   return (
-    <div className='fixed w-full bottom-0'>
+    <div className='fixed w-full bottom-0 select-none'>
       <div className='max-w-full md:max-w-[90%]  mx-auto'>
         <nav
           className={`bg-primary backdrop-blur-xs rounded-2xl h-10 md:h-14 transition-all duration-300 ${
