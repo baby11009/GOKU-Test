@@ -45,42 +45,6 @@ const preloadImages = async (
   await Promise.all(promises);
 };
 
-// const preloadImages = async (
-//   imgListRef: RefObject<BlobImageList>,
-//   setLoadingProgress: (progress: number) => void,
-// ) => {
-//   const total = 120;
-//   let loaded = 0;
-
-//   const promises = Array.from({ length: total }).map((_, index) => {
-//     return new Promise<void>((resolve) => {
-//       const img = new Image();
-//       const imgNum = index + 1;
-//       // const src = `/assets/images/rotation/${imgNum}.jpg`;
-
-//       const src = `https://360.eco-retreat.com.vn/assets/images/overview/rotation/${imgNum}.jpg`;
-
-//       img.onload = () => {
-//         imgListRef.current[imgNum] = src; // Lưu path
-//         loaded++;
-//         setLoadingProgress(Math.round((loaded / total) * 100));
-//         resolve();
-//       };
-
-//       img.onerror = () => {
-//         console.error(`Failed to load image ${imgNum}`);
-//         loaded++;
-//         setLoadingProgress(Math.round((loaded / total) * 100));
-//         resolve(); // Vẫn resolve để không block
-//       };
-
-//       img.src = src; // Trigger download và cache
-//     });
-//   });
-
-//   await Promise.all(promises);
-// };
-
 const Overview = () => {
   const [isMoving, setIsMoving] = useState(false);
 
