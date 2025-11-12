@@ -240,7 +240,7 @@ const Overview = () => {
   return (
     <div className='w-dvw h-dvh' ref={containerRef}>
       <img
-        src={`${window.location.origin}${src}`}
+        src={src}
         alt=''
         className='size-full object-cover select-none'
         draggable='false'
