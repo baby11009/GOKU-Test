@@ -177,6 +177,7 @@ const Overview = () => {
       const handleTouchMove = (e: TouchEvent) => {
         const touch = e.touches[0];
         calculateAngle(touch.clientX);
+        toggleNavbar({ state: true });
       };
 
       window.addEventListener("mousemove", handleMouseMove);
