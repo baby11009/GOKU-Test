@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
 import LoadingBackground from "./LoadingBackground";
 interface Props {
   activePathName: string;
@@ -12,6 +12,7 @@ const LoadingScreen = ({ activePathName }: Props) => {
     let timeout: number | null = setTimeout(() => {
       setIsLoading(false);
       timeout = null;
+      <Navigate to={"/overview"} replace={true} />;
     }, 5000);
 
     return () => {

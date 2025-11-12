@@ -1,7 +1,31 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, use } from "react";
 import PageLoader from "@/components/loader/PageLoader";
 import { toggleNavbar } from "@/components/navbar/Navbar";
+// // Import tất cả ảnh trong folder
+const images = import.meta.glob("/images/rotation/*.{jpg,png,svg}", {
+  eager: true,
+});
+// const getBlob = async (url: string) => {
+//   const response = await fetch(url);
+//   const blob = await response.blob();
+
+//   return URL.createObjectURL(blob);
+// };
+
+// const getAllImages = async (imgListRef: RefObject<BlobImageList>) => {
+//   const images = import.meta.glob("/images/rotation/*.{jpg,png,svg}", {
+//     eager: true,
+//   });
+
+//   console.log("🚀 ~ images:", images);
+//   Object.values(images).map(async (url, index) => {
+//     const blob = await getBlob(url as string);
+//     imgListRef.current[index + 1] = blob;
+//     // Làm gì đó với blob
+//   });
+// };
+
 type BlobImageList = Record<string, string>;
 
 // tính toán  Hệ số nhạy (tốc độ xoay)
@@ -47,7 +71,7 @@ const Overview = () => {
 
   const [src, setSrc] = useState("/images/rotation/1.jpg");
 
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingProgress, setLoadingProgress] = useState(100);
 
   const imgList = useRef<BlobImageList>({});
 
@@ -87,32 +111,46 @@ const Overview = () => {
       // Cập nhật lastPos
       lastPos.current = posX;
 
-      const cachedSrc = imgList.current[imgNum];
+      // const cachedSrc = imgList.current[imgNum];
 
-      if (cachedSrc) {
-        setSrc(cachedSrc);
-      }
+      // if (cachedSrc) {
+      //   setSrc(cachedSrc);
+      // }
+
+      setSrc(`/images/rotation/${imgNum}.jpg`);
     }
   }, []);
 
-  useEffect(() => {
-    preloadImages(imgList, setLoadingProgress).then(() => {
-      // Set ảnh đầu tiên sau khi load xong
-      const firstImage = imgList.current["1"];
-      if (firstImage) {
-        setSrc(firstImage);
-      }
-    });
+  // useEffect(() => {
+  //   // getAllImages(imgList);
 
-    return () => {
-      // Clean up image blobs
-      Object.values(imgList.current).forEach((url) => {
-        if (url && url.startsWith("blob:")) {
-          URL.revokeObjectURL(url);
-        }
-      });
-    };
-  }, []);
+  //   return () => {
+  //     Object.values(imgList.current).forEach((url) => {
+  //       if (url && url.startsWith("blob:")) {
+  //         URL.revokeObjectURL(url);
+  //       }
+  //     });
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   preloadImages(imgList, setLoadingProgress).then(() => {
+  //     // Set ảnh đầu tiên sau khi load xong
+  //     const firstImage = imgList.current["1"];
+  //     if (firstImage) {
+  //       setSrc(firstImage);
+  //     }
+  //   });
+
+  //   return () => {
+  //     // Clean up image blobs
+  //     Object.values(imgList.current).forEach((url) => {
+  //       if (url && url.startsWith("blob:")) {
+  //         URL.revokeObjectURL(url);
+  //       }
+  //     });
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (loadingProgress === 100 && containerRef.current) {
@@ -189,9 +227,9 @@ const Overview = () => {
     }
   }, [isMoving, loadingProgress, calculateAngle]);
 
-  if (loadingProgress < 100) {
-    return <PageLoader loadingProgress={loadingProgress} />;
-  }
+  // if (loadingProgress < 100) {
+  //   return <PageLoader loadingProgress={loadingProgress} />;
+  // }
 
   return (
     <div className='w-dvw h-dvh' ref={containerRef}>
