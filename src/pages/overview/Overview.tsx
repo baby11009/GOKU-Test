@@ -3,9 +3,12 @@ import { useState, useRef, useEffect, useCallback } from "react";
 // import PageLoader from "@/components/loader/PageLoader";
 import { toggleNavbar } from "@/components/navbar/Navbar";
 // // Import tất cả ảnh trong folder
-import.meta.glob("/images/rotation/*.{jpg,png,svg}", {
+const images = import.meta.glob("@/assets/images/rotation/*.{jpg,png,svg}", {
   eager: true,
 });
+
+const firstImg = (images["/src/assets/images/rotation/1.jpg"] as any).default;
+console.log("🚀 ~ firstImg:", firstImg)
 // const getBlob = async (url: string) => {
 //   const response = await fetch(url);
 //   const blob = await response.blob();
@@ -69,7 +72,7 @@ const calculateSen = () => {
 const Overview = () => {
   const [isMoving, setIsMoving] = useState(false);
 
-  const [src, setSrc] = useState("/images/rotation/1.jpg");
+  const [src, setSrc] = useState(firstImg);
 
   const [loadingProgress, setLoadingProgress] = useState(0);
 
@@ -117,7 +120,11 @@ const Overview = () => {
       //   setSrc(cachedSrc);
       // }
 
-      setSrc(`/images/rotation/${imgNum}.jpg`);
+      // setSrc(`/images/rotation/${imgNum}.jpg`);
+
+      setSrc(
+        (images[`/src/assets/images/rotation/${imgNum}.jpg`] as any).default,
+      );
     }
   }, []);
 
