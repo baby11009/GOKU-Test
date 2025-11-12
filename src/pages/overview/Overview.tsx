@@ -12,35 +12,12 @@ const calculateSen = () => {
 
 // Preload image as Blob URL để cache toàn bộ ảnh
 
-// async function preloadImageAsBlob(url: string) {
-//   const response = await fetch(url);
-//   const blob = await response.blob();
-//   return URL.createObjectURL(blob);
-// }
+async function preloadImageAsBlob(url: string) {
+  const response = await fetch(url);
 
-// const preloadImages = async (
-//   imgListRef: RefObject<BlobImageList>,
-//   setLoadingProgress: Dispatch<SetStateAction<number>>,
-// ) => {
-//   const total = 120;
-//   let loaded = 0;
-//   const promises = Array.from({ length: total }).map(async (_, index) => {
-//     try {
-//       const blobUrl = await preloadImageAsBlob(
-//         `/images/rotation/${index + 1}.jpg`,
-//       );
-//       imgListRef.current[index + 1] = blobUrl;
-//     } catch (err) {
-//       console.error(`Failed to load image ${index + 1}:`, err);
-//     } finally {
-//       loaded++;
-//       // Cập nhật progress theo phần trăm
-//       setLoadingProgress(Math.round((loaded / total) * 100));
-//     }
-//   });
-
-//   await Promise.all(promises);
-// };
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+}
 
 const preloadImages = async (
   imgListRef: RefObject<BlobImageList>,
@@ -48,46 +25,69 @@ const preloadImages = async (
 ) => {
   const total = 120;
   let loaded = 0;
-
-  const promises = Array.from({ length: total }).map((_, index) => {
-    return new Promise<void>((resolve) => {
-      const img = new Image();
-      const imgNum = index + 1;
-      const src = `/assets/images/rotation/${imgNum}.jpg`;
-
-      img.onload = () => {
-        imgListRef.current[imgNum] = src; // Lưu path
-        loaded++;
-        setLoadingProgress(Math.round((loaded / total) * 100));
-        resolve();
-      };
-
-      img.onerror = () => {
-        console.error(`Failed to load image ${imgNum}`);
-        loaded++;
-        setLoadingProgress(Math.round((loaded / total) * 100));
-        resolve(); // Vẫn resolve để không block
-      };
-
-      img.src = src; // Trigger download và cache
-    });
+  const promises = Array.from({ length: total }).map(async (_, index) => {
+    try {
+      const blobUrl = await preloadImageAsBlob(
+        `/images/rotation/${index + 1}.jpg`,
+      );
+      console.log("🚀 ~ blobUrl:", blobUrl);
+      imgListRef.current[index + 1] = blobUrl;
+    } catch (err) {
+      console.error(`Failed to load image ${index + 1}:`, err);
+    } finally {
+      loaded++;
+      // Cập nhật progress theo phần trăm
+      setLoadingProgress(Math.round((loaded / total) * 100));
+    }
   });
 
   await Promise.all(promises);
 };
 
+// const preloadImages = async (
+//   imgListRef: RefObject<BlobImageList>,
+//   setLoadingProgress: (progress: number) => void,
+// ) => {
+//   const total = 120;
+//   let loaded = 0;
+
+//   const promises = Array.from({ length: total }).map((_, index) => {
+//     return new Promise<void>((resolve) => {
+//       const img = new Image();
+//       const imgNum = index + 1;
+//       // const src = `/assets/images/rotation/${imgNum}.jpg`;
+
+//       const src = `https://360.eco-retreat.com.vn/assets/images/overview/rotation/${imgNum}.jpg`;
+
+//       img.onload = () => {
+//         imgListRef.current[imgNum] = src; // Lưu path
+//         loaded++;
+//         setLoadingProgress(Math.round((loaded / total) * 100));
+//         resolve();
+//       };
+
+//       img.onerror = () => {
+//         console.error(`Failed to load image ${imgNum}`);
+//         loaded++;
+//         setLoadingProgress(Math.round((loaded / total) * 100));
+//         resolve(); // Vẫn resolve để không block
+//       };
+
+//       img.src = src; // Trigger download và cache
+//     });
+//   });
+
+//   await Promise.all(promises);
+// };
+
 const Overview = () => {
   const [isMoving, setIsMoving] = useState(false);
 
-  // const [src, setSrc] = useState("1.jpg");
+  const [src, setSrc] = useState("1.jpg");
 
   const [loadingProgress, setLoadingProgress] = useState(0);
 
   const imgList = useRef<BlobImageList>({});
-
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  // container
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -126,8 +126,7 @@ const Overview = () => {
       const cachedSrc = imgList.current[imgNum];
 
       if (cachedSrc) {
-        // setSrc(cachedSrc);
-        imgRef.current!.src = cachedSrc;
+        setSrc(cachedSrc);
       }
     }
   }, []);
@@ -137,9 +136,7 @@ const Overview = () => {
       // Set ảnh đầu tiên sau khi load xong
       const firstImage = imgList.current[1];
       if (firstImage) {
-        // setSrc(firstImage);
-        console.log(imgRef.current)
-        imgRef.current!.src = firstImage;
+        setSrc(firstImage);
       }
     });
   }, []);
@@ -245,9 +242,8 @@ const Overview = () => {
   return (
     <div className='w-dvw h-dvh' ref={containerRef}>
       <img
-        // src={src}
+        src={src}
         alt=''
-        ref={imgRef}
         className='size-full object-cover select-none'
         draggable='false'
         onDragStart={(e) => e.preventDefault()}
