@@ -1,8 +1,8 @@
-import type { Dispatch, RefObject, SetStateAction } from "react";
+// import type { Dispatch, RefObject, SetStateAction } from "react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import PageLoader from "@/components/loader/PageLoader";
 import { toggleNavbar } from "@/components/navbar/Navbar";
-type BlobImageList = Record<string, string>;
+// type BlobImageList = Record<string, string>;
 
 // tính toán  Hệ số nhạy (tốc độ xoay)
 const calculateSen = () => {
@@ -42,48 +42,48 @@ const calculateSen = () => {
 //   await Promise.all(promises);
 // };
 
-const preloadImages = async (
-  imgListRef: RefObject<BlobImageList>,
-  setLoadingProgress: Dispatch<SetStateAction<number>>,
-) => {
-  const total = 120;
-  let loaded = 0;
+// const preloadImages = async (
+//   imgListRef: RefObject<BlobImageList>,
+//   setLoadingProgress: Dispatch<SetStateAction<number>>,
+// ) => {
+//   const total = 120;
+//   let loaded = 0;
 
-  const promises = Array.from({ length: total }).map((_, index) => {
-    return new Promise<void>((resolve, reject) => {
-      const img = new Image();
-      const imgNum = index + 1;
-      const src = `/src/assets/images/rotation/${imgNum}.jpg`;
+//   const promises = Array.from({ length: total }).map((_, index) => {
+//     return new Promise<void>((resolve, reject) => {
+//       const img = new Image();
+//       const imgNum = index + 1;
+//       const src = `/src/assets/images/rotation/${imgNum}.jpg`;
 
-      img.onload = () => {
-        imgListRef.current[imgNum] = src; // Chỉ lưu path
-        loaded++;
-        setLoadingProgress(Math.round((loaded / total) * 100));
-        resolve();
-      };
+//       img.onload = () => {
+//         imgListRef.current[imgNum] = src; // Chỉ lưu path
+//         loaded++;
+//         setLoadingProgress(Math.round((loaded / total) * 100));
+//         resolve();
+//       };
+//       //localhost:4173/assets/images/rotation
+//       http: img.onerror = (err) => {
+//         console.error(`Failed to load image ${imgNum}:`, err);
+//         loaded++;
+//         setLoadingProgress(Math.round((loaded / total) * 100));
+//         reject(err);
+//       };
 
-      img.onerror = (err) => {
-        console.error(`Failed to load image ${imgNum}:`, err);
-        loaded++;
-        setLoadingProgress(Math.round((loaded / total) * 100));
-        reject(err);
-      };
+//       img.src = src;
+//     });
+//   });
 
-      img.src = src;
-    });
-  });
-
-  await Promise.allSettled(promises); // Dùng allSettled để không fail nếu 1 ảnh lỗi
-};
+//   await Promise.allSettled(promises); // Dùng allSettled để không fail nếu 1 ảnh lỗi
+// };
 
 const Overview = () => {
   const [isMoving, setIsMoving] = useState(false);
 
-  const [src, setSrc] = useState("/images/rotation/1.jpg");
+  const [src, setSrc] = useState("1.jpg");
 
   const [loadingProgress, setLoadingProgress] = useState(0);
 
-  const imgList = useRef<BlobImageList>({});
+  // const imgList = useRef<BlobImageList>({});
 
   // container
 
@@ -121,32 +121,36 @@ const Overview = () => {
       // Cập nhật lastPos
       lastPos.current = posX;
 
-      const cachedSrc = imgList.current[imgNum];
-
-      if (cachedSrc) {
-        setSrc(cachedSrc);
-      }
+      // const cachedSrc = imgList.current[imgNum];
+      setSrc(`${imgNum}.jpg`);
+      // if (cachedSrc) {
+      //   setSrc(cachedSrc);
+      // }
     }
   }, []);
 
   useEffect(() => {
-    preloadImages(imgList, setLoadingProgress).then(() => {
-      // Set ảnh đầu tiên sau khi load xong
-      const firstImage = imgList.current["1"];
-      if (firstImage) {
-        setSrc(firstImage);
-      }
-    });
-
-    return () => {
-      // Clean up image blobs
-      Object.values(imgList.current).forEach((url) => {
-        if (url && url.startsWith("blob:")) {
-          URL.revokeObjectURL(url);
-        }
-      });
-    };
+    setLoadingProgress(100);
   }, []);
+
+  // useEffect(() => {
+  //   preloadImages(imgList, setLoadingProgress).then(() => {
+  //     // Set ảnh đầu tiên sau khi load xong
+  //     const firstImage = imgList.current["1"];
+  //     if (firstImage) {
+  //       setSrc(firstImage);
+  //     }
+  //   });
+
+  //   return () => {
+  //     // Clean up image blobs
+  //     Object.values(imgList.current).forEach((url) => {
+  //       if (url && url.startsWith("blob:")) {
+  //         URL.revokeObjectURL(url);
+  //       }
+  //     });
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (loadingProgress === 100 && containerRef.current) {
@@ -230,7 +234,7 @@ const Overview = () => {
   return (
     <div className='w-dvw h-dvh' ref={containerRef}>
       <img
-        src={src}
+        src={`${window.location.origin}/assets/images/rotation/${src}`}
         alt=''
         className='size-full object-cover select-none'
         draggable='false'
